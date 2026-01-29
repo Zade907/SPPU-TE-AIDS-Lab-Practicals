@@ -1,0 +1,56 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+def sigmoid(x):
+    
+    y = 1 / (1 + np.exp(-x))
+    
+    plt.xlabel('X-Axis')
+    plt.ylabel('Y-Axis')
+    plt.title('Sigmoid Activation Function')
+    plt.plot(x,y)
+    plt.grid(True)
+    plt.show()
+    return y
+x = np.linspace(-10,10,100)
+sigmoid = sigmoid(x)
+
+def tanh():
+    x = np.linspace(-10,10,100)
+    y = np.tanh(x)
+    plt.xlabel('X-Axis')
+    plt.ylabel('Y-Axis')
+    plt.title('Tanh Activation Function')
+    plt.plot(x,y)
+    plt.grid(True)
+    plt.show()
+    
+tanh()
+
+def plot_relu():
+    relu = np.maximum(0,x)
+    plt.xlabel('X-Axis')
+    plt.ylabel('Y-Axis')
+    plt.title('Relu Activation Function')
+    plt.plot(x,relu)
+    plt.grid(True)
+    plt.show()
+
+plot_relu()
+
+def leakyRelu(x):
+    def plotLeakyRelu(x, alpha = 0.1):
+        return np.where(x >= 0, x, alpha * x)
+    
+    leakyReluValues = plotLeakyRelu(x)
+    
+    plt.xlabel('X-Axis')
+    plt.ylabel('Y-Axis')
+    plt.title('Leaky Relu Activation Function')
+    plt.plot(x,leakyReluValues)
+    plt.grid(True)
+    plt.show()
+
+leakyRelu(x)
+        
