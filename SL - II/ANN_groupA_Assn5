@@ -1,0 +1,38 @@
+import numpy as np
+
+# Input vector pairs (Bipolar form)
+X = np.array([[1, -1, 1],
+              [-1, 1, -1]])
+
+Y = np.array([[1, 1],
+              [-1, -1]])
+
+# BAM Training (Weight Matrix)
+W = np.zeros((X.shape[1], Y.shape[1]))
+
+for i in range(len(X)):
+    W += np.outer(X[i], Y[i])
+
+print("Weight Matrix:\n", W)
+
+
+# Activation Function
+def sign(x):
+    return np.where(x >= 0, 1, -1)
+
+
+# Test BAM
+def BAM(x):
+    y = sign(np.dot(x, W))
+    x_new = sign(np.dot(y, W.T))
+    return x_new, y
+
+
+# Testing with first pattern
+test_x = np.array([1, -1, 1])
+
+x_out, y_out = BAM(test_x)
+
+print("\nInput X:", test_x)
+print("Output Y:", y_out)
+print("Recovered X:", x_out)

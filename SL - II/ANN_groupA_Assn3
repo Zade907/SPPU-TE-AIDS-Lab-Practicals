@@ -1,0 +1,37 @@
+#ASCII to Int
+digits=[int(chr(i)) for i in range(48,58)]
+#Int to Binary(4bits)
+def to_binary(n):
+    return [int(bit) for bit in format(n,"04b")]
+inputs=[to_binary(d) for d in digits]
+target=[d%2 for d in digits]
+weights=[0.0,0.0,0.0,0.0]
+bias=0
+learning_rate=0.1
+epochs=20
+def step(x):
+    return 1 if x>0 else 0
+for _ in range(epochs):
+    for i in range(len(inputs)):
+        x=inputs[i]
+        y=target[i]
+        output=sum(w* xi for w,xi in zip(weights,x))
+        prediction=step(output)
+        error=y-prediction
+        for j in range(len(weights)):
+            weights[j]+=learning_rate*error*x[j]
+            bias+=learning_rate*error
+print("Even or Odd")
+    
+for i in range(len(inputs)):
+    x=inputs[i]
+    digit=digits[i]
+    output=sum(w* xi for w,xi in zip(weights,x))
+    prediction=step(output)
+        
+    if prediction==1:
+        print(digit,"ODD")
+    else:
+        print(digit,"EVEN")
+print("Final Weights",weights)
+print("Final Bias",bias)

@@ -1,0 +1,60 @@
+import numpy as np
+
+# Input dataset
+X = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+
+# Expected output (XOR)
+y = np.array([[0],
+              [1],
+              [1],
+              [0]])
+
+# Sigmoid Activation
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+# Derivative of sigmoid
+def sigmoid_derivative(x):
+    return x*(1-x)
+
+# Initialize weights
+np.random.seed(1)
+
+input_neurons = 2
+hidden_neurons = 2
+output_neurons = 1
+
+W1 = np.random.uniform(size=(input_neurons, hidden_neurons))
+W2 = np.random.uniform(size=(hidden_neurons, output_neurons))
+
+# Training
+epochs = 10000
+lr = 0.1
+
+for _ in range(epochs):
+
+    # Forward Propagation
+    hidden_input = np.dot(X, W1)
+    hidden_output = sigmoid(hidden_input)
+
+    final_input = np.dot(hidden_output, W2)
+    output = sigmoid(final_input)
+
+    # Back Propagation
+    error = y - output
+    d_output = error * sigmoid_derivative(output)
+
+    hidden_error = d_output.dot(W2.T)
+    d_hidden = hidden_error * sigmoid_derivative(hidden_output)
+
+    # Update weights
+    W2 += hidden_output.T.dot(d_output) * lr
+    W1 += X.T.dot(d_hidden) * lr
+
+
+# Output
+print("Predicted Output:")
+print(output)

@@ -1,0 +1,12 @@
+w1=1
+w2=-1
+threshold=1
+print("A B Output")
+for A in range (2):
+    for B in range(2):
+        sum=(A*w1)+(B*w2)
+        if sum>=threshold:
+            output=1
+        else:
+            output=0
+print(A,B,output)

@@ -1,0 +1,44 @@
+X = np.array([
+    [2, 3],
+    [4, 5],
+    [5, 2],
+    [7, 3],
+    [3, 7],
+    [6, 8]
+])
+
+# Labels (Class 0 and Class 1)
+y = np.array([0, 0, 0, 1, 1, 1])
+
+# Initialize weights and bias
+w = np.zeros(2)
+b = 0
+lr = 0.1
+
+# Step activation
+def step(z):
+    return 1 if z >= 0 else 0
+
+# Training (Perceptron Learning Law)
+for epoch in range(20):
+    for i in range(len(X)):
+        z = np.dot(X[i], w) + b
+        y_pred = step(z)
+        error = y[i] - y_pred
+        w = w + lr * error * X[i]
+        b = b + lr * error
+
+# Plot decision region
+plt.scatter(X[y==0][:,0], X[y==0][:,1], color='red', label='Class 0')
+plt.scatter(X[y==1][:,0], X[y==1][:,1], color='blue', label='Class 1')
+
+# Decision boundary
+x1 = np.linspace(0,10,100)
+x2 = -(w[0]*x1 + b)/w[1]
+plt.plot(x1, x2, 'k')
+
+plt.xlabel("X1")
+plt.ylabel("X2")
+plt.legend()
+plt.title("Perceptron Decision Region")
+plt.show()
