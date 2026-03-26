@@ -1,0 +1,28 @@
+# Diffie-Hellman Key Exchange Implementation 
+# Step 1: Public values
+p = int(input("Enter prime number (p): "))      # Example: 23
+g = int(input("Enter primitive root (g): "))   # Example: 9
+
+# Step 2: Private keys
+a = int(input("Enter Alice private key (a): "))   # Example: 4
+b = int(input("Enter Bob private key (b): "))     # Example: 3
+
+# Step 3: Generate public keys
+A = pow(g, a, p) 
+B = pow(g, b, p)   
+
+print("\nAlice Public Key (A) =", A)
+print("Bob Public Key (B) =", B)
+
+# Step 4: Generate shared secret key
+Ka = pow(B, a, p)  
+Kb = pow(A, b, p)  
+
+print("\nSecret Key calculated by Alice (Ka) =", Ka)
+print("Secret Key calculated by Bob (Kb) =", Kb)
+
+# Verification
+if Ka == Kb:
+    print("\nShared Secret Key Established Successfully!")
+else:
+    print("\nKey Exchange Failed!")
