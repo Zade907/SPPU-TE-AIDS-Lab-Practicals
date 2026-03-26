@@ -1,0 +1,55 @@
+import numpy as np
+
+X = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+
+y = np.array([[0],
+              [1],
+              [1],
+              [0]])
+
+inputNode = 2
+hiddenNode = 2
+outputNode = 1
+
+weight1 = np.random.uniform(size=(inputNode, hiddenNode))
+weight2 = np.random.uniform(size=(hiddenNode, outputNode))
+
+bias1 = np.random.uniform(size=(1, hiddenNode))
+bias2 = np.random.uniform(size=(1, outputNode))
+
+lr = 0.1
+
+def sigmoid(x): 
+    return 1/(1 + np.exp(-x))
+
+def derivative(x):
+    return x * (1 - x)
+
+for epoch in range(10000):
+    # forward
+    hiddenInput = np.dot(X, weight1) + bias1
+    hiddenOutput = sigmoid(hiddenInput)
+    
+    finalInput = np.dot(hiddenOutput, weight2) + bias2
+    finalOutput = sigmoid(finalInput)
+    
+    # error
+    error = y - finalOutput
+    
+    # backprop
+    derivedOutput = error * derivative(finalOutput)
+    
+    hiddenError = derivedOutput.dot(weight2.T)
+    derivedHidden = hiddenError * derivative(hiddenOutput)
+    
+    # update
+    weight2 += hiddenOutput.T.dot(derivedOutput) * lr
+    weight1 += X.T.dot(derivedHidden) * lr
+    
+    bias2 += np.sum(derivedOutput, axis=0, keepdims=True) * lr
+    bias1 += np.sum(derivedHidden, axis=0, keepdims=True) * lr
+
+print(finalOutput)
