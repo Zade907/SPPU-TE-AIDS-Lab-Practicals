@@ -1,0 +1,44 @@
+import pandas as pd
+import re
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.multiclass import OneVsRestClassifier
+
+# load dataset
+data = pd.read_csv("train.csv")
+
+# labels
+labels = ["toxic","severe_toxic","obscene","threat","insult","identity_hate"]
+
+# simple text cleaning
+def clean(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z ]', '', text)
+    return text
+
+data["comment_text"] = data["comment_text"].apply(clean)
+
+# features and target
+X = data["comment_text"]
+y = data[labels]
+
+# TF-IDF
+vectorizer = TfidfVectorizer(max_features=3000)
+X_vec = vectorizer.fit_transform(X)
+
+# model
+model = OneVsRestClassifier(LogisticRegression())
+model.fit(X_vec, y)
+
+# test
+def predict(comment):
+    comment = clean(comment)
+    vec = vectorizer.transform([comment])
+    pred = model.predict(vec)[0]
+
+    return dict(zip(labels, pred))
+
+
+print(predict("You are an idiot"))
+print(predict("I will kill you"))
