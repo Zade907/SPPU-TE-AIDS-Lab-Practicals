@@ -1,0 +1,52 @@
+import re
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+# Download required resources (run once)
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+# Sample text
+text = """
+Natural Language Processing (NLP) is a fascinating field.
+It involves tokenization, stemming, lemmatization, and removing stopwords!
+Computers are learning to understand human languages better.
+"""
+
+print("Original Text:\n", text)
+
+sentences = sent_tokenize(text)
+print("\nSentence Tokenization:\n", sentences)
+
+words = word_tokenize(text)
+print("\nWord Tokenization:\n", words)
+
+regex_tokens = re.findall(r'\b\w+\b', text.lower())
+print("\nRegex Tokenization:\n", regex_tokens)
+
+stop_words = set(stopwords.words('english'))
+filtered_words = [w for w in regex_tokens if w not in stop_words]
+
+print("\nAfter Stopword Removal:\n", filtered_words)
+
+stemmer = PorterStemmer()
+stemmed_words = [stemmer.stem(word) for word in filtered_words]
+
+print("\nAfter Stemming:\n", stemmed_words)
+
+lemmatizer = WordNetLemmatizer()
+lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words]
+
+print("\nAfter Lemmatization:\n", lemmatized_words)
+
+def preprocess(text):
+    text = text.lower()
+    tokens = re.findall(r'\b\w+\b', text)
+    tokens = [t for t in tokens if t not in stop_words]
+    tokens = [lemmatizer.lemmatize(t) for t in tokens]
+    return tokens
+
+print("\nFinal Preprocessed Output:\n", preprocess(text))
