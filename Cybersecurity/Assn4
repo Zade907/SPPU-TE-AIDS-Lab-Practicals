@@ -1,0 +1,36 @@
+# RSA Implementation
+import math
+# ---------- Function to find GCD ----------
+def gcd(a, b):
+    while b:
+        a, b = b, a % b
+    return a
+# ---------- Function to find modular inverse ----------
+def mod_inverse(e, phi):
+    for d in range(1, phi):
+        if (d * e) % phi == 1:
+            return d
+# ---------- MAIN ----------
+# Taking user input
+p = int(input("Enter prime number p: "))
+q = int(input("Enter prime number q: "))
+# Step 1: n
+n = p * q
+# Step 2: phi
+phi = (p - 1) * (q - 1)
+# Step 3: choose e
+for e in range(2, phi):
+    if gcd(e, phi) == 1:
+        break
+d = mod_inverse(e, phi)
+print("\nPublic Key (e, n):", (e, n))
+print("Private Key (d, n):", (d, n))
+msg = int(input("\nEnter message (number): "))
+
+# Encryption
+cipher = (msg ** e) % n
+print("Encrypted message:", cipher)
+
+# Decryption
+decrypted = (cipher ** d) % n
+print("Decrypted message:", decrypted)

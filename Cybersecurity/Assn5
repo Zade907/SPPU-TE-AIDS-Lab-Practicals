@@ -1,0 +1,77 @@
+# Simple ECC Implementation
+# Curve: y^2 = x^3 + ax + b mod p
+# ---------- Helper Functions ----------
+def mod_inverse(a, p):
+    # Modular inverse using brute force
+    for i in range(1, p):
+        if (a * i) % p == 1:
+            return i
+
+def point_add(P, Q, a, p):
+    # Point addition on elliptic curve
+    if P == (0, 0): return Q
+    if Q == (0, 0): return P
+
+    if P == Q:
+        # Point doubling
+        lam = (3 * P[0] * P[0] + a) * mod_inverse(2 * P[1], p)
+    else:
+        # Point addition
+        lam = (Q[1] - P[1]) * mod_inverse(Q[0] - P[0], p)
+
+    lam = lam % p
+
+    x = (lam * lam - P[0] - Q[0]) % p
+    y = (lam * (P[0] - x) - P[1]) % p
+
+    return (x, y)
+
+def scalar_mult(k, P, a, p):
+    # Repeated addition
+    R = (0, 0)
+    for _ in range(k):
+        R = point_add(R, P, a, p)
+    return R
+
+
+# ---------- MAIN ----------
+# Curve parameters
+p = int(input("Enter prime p: "))
+a = int(input("Enter a: "))
+b = int(input("Enter b: "))
+
+# Base point
+Gx = int(input("Enter Gx: "))
+Gy = int(input("Enter Gy: "))
+G = (Gx, Gy)
+
+# Private key
+d = int(input("Enter private key: "))
+
+# Public key
+Q = scalar_mult(d, G, a, p)
+print("Public Key Q:", Q)
+
+# Message point
+Mx = int(input("Enter message point x: "))
+My = int(input("Enter message point y: "))
+P = (Mx, My)
+
+# Encryption
+k = int(input("Enter random k: "))
+C1 = scalar_mult(k, G, a, p)
+C2 = point_add(P, scalar_mult(k, Q, a, p), a, p)
+
+print("\nCipher Points:")
+print("C1:", C1)
+print("C2:", C2)
+
+# Decryption
+dC1 = scalar_mult(d, C1, a, p)
+
+# P = C2 - dC1
+# Using addition with inverse
+inv = (dC1[0], (-dC1[1]) % p)
+P_dec = point_add(C2, inv, a, p)
+
+print("\nDecrypted Message Point:", P_dec)

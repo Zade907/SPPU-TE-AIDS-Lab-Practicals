@@ -1,0 +1,66 @@
+# ---------- S-BOX ----------
+SBOX = {
+    '0000':'1001','0001':'0100','0010':'1010','0011':'1011',
+    '0100':'1101','0101':'0001','0110':'1000','0111':'0101',
+    '1000':'0110','1001':'0010','1010':'0000','1011':'0011',
+    '1100':'1100','1101':'1110','1110':'1111','1111':'0111'
+}
+
+# ---------- Helper Functions ----------
+def xor(a, b):
+    return ''.join('0' if i==j else '1' for i,j in zip(a,b))
+
+def sub_nib(bits):
+    # Substitute each 4-bit using SBOX
+    return ''.join(SBOX[bits[i:i+4]] for i in range(0, len(bits), 4))
+
+def shift_rows(bits):
+    # Swap 2nd row in 2x2 matrix
+    return bits[0:4] + bits[12:16] + bits[8:12] + bits[4:8]
+
+
+# ---------- Key Expansion (Simplified) ----------
+def key_expansion(key):
+    w0 = key[:8]
+    w1 = key[8:]
+
+    # simple transformation
+    w2 = xor(w0, sub_nib(w1))
+    w3 = xor(w2, w1)
+
+    return w0+w1, w2+w3
+
+
+# ---------- Encryption ----------
+def encrypt(plaintext, key):
+    k1, k2 = key_expansion(key)
+
+    print("Round Key 1:", k1)
+    print("Round Key 2:", k2)
+
+    # Initial AddRoundKey
+    state = xor(plaintext, k1)
+    print("After AddRoundKey:", state)
+
+    # Round 1
+    state = sub_nib(state)
+    print("After SubNib:", state)
+
+    state = shift_rows(state)
+    print("After ShiftRows:", state)
+
+    # Skipping MixColumns (for simplicity)
+
+    state = xor(state, k2)
+    print("After Round Key:", state)
+
+    return state
+
+
+# ---------- MAIN ----------
+key = input("Enter 16-bit key: ")
+plaintext = input("Enter 16-bit plaintext: ")
+
+cipher = encrypt(plaintext, key)
+
+print("\nCiphertext:", cipher)
