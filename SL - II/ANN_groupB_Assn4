@@ -1,0 +1,41 @@
+import numpy as np
+
+# Step 1: Define 4 patterns (must be bipolar: -1, 1)
+patterns = np.array([
+    [1, -1, 1, -1],
+    [-1, 1, -1, 1],
+    [1, 1, -1, -1],
+    [-1, -1, 1, 1]
+])
+
+# Step 2: Train Hopfield Network (Hebbian Learning)
+n = patterns.shape[1]
+W = np.zeros((n, n))
+
+for p in patterns:
+    p = p.reshape(-1, 1)
+    W += p @ p.T
+
+# Remove self-connections
+np.fill_diagonal(W, 0)
+
+print("Weight Matrix:\n", W)
+
+# Step 3: Recall function
+def recall(pattern, W, steps=5):
+    x = pattern.copy()
+    
+    for _ in range(steps):
+        for i in range(len(x)):
+            net = np.dot(W[i], x)
+            x[i] = 1 if net >= 0 else -1
+    return x
+
+# Step 4: Test with noisy input
+test_pattern = np.array([1, -1, -1, -1])  # noisy version
+
+print("\nNoisy Input:", test_pattern)
+
+recalled = recall(test_pattern, W)
+
+print("Recalled Pattern:", recalled)
